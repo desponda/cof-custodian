@@ -9,4 +9,5 @@ policies:
       value: 500
   actions:
       - type: "notify"
-      - attribute: "customer_id"
+        attribute: "customer_id"
+        message: "your account ${nickname} balance is low"
