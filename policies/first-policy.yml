@@ -1,6 +1,13 @@
 ## Customize deployment commands
-deployment:
-  staging:
-    branch: master
-    heroku:
-      appname: foo-bar-123
+policies:
+- name: alert low account balance
+  resource: account
+  conditions:
+    - type: "comparison"
+      operator: "lessThan"
+      attribute: "balance"
+      value: 500
+  actions:
+      - type: "notify"
+        attribute: "customer_id"
+        message: "your account ${nickname} balance is low"

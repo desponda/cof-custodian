@@ -3,7 +3,6 @@
 var custodian = require('./services/custodian');
 
 function start() {
-    console.log("Hello, World");
     custodian.execute();
 }
 
