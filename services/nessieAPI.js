@@ -14,6 +14,26 @@ module.exports.accountService = function accountService() {
             }
         });
     };
+
+    this.getAccount = function (accountId, callback) {
+        request(url + 'accounts/'+accountId+'?key=' + api_key, function (error, response, body) {
+            if (error) {
+                console.error("Error! " + error + response);
+            } else {
+                callback([JSON.parse(body)]);
+            }
+        });
+    };
+
+    this.createTransfer = function (payee, transfer, callback) {
+        request.post({url: url+ 'accounts/'+payee+'/transfers?key='+api_key ,body: transfer, json:true}, function(error, response, body) {
+            if (error) {
+                console.error("Error! " + error + response);
+            } else {
+                callback(response.body);
+            }
+        });
+    }
 };
 
 

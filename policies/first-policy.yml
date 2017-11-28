@@ -11,3 +11,17 @@ policies:
       - type: "notify"
         attribute: "customer_id"
         message: "your account ${nickname} balance is low"
+- name: transfer from savings to checkings when low
+  resource: singleAccount
+  resourceId: "59f9fc0bb390353c953a1b4f"
+  conditions:
+    - type: "comparison"
+      operator: "lessThan"
+      attribute: "balance"
+      value: 500
+  actions:
+      - type: "transfer"
+        from: "59f9fc79b390353c953a1b50"
+        to: "59f9fc0bb390353c953a1b4f"
+        amount: 50.0
+        message: "transferring from savings to checking"

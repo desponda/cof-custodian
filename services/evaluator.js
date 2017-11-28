@@ -15,6 +15,12 @@ function meetsConditions(resource, conditions) {
                 }
             }
         }
+        else if(condition.type === 'equality') {
+            var a = resource[condition.attribute], b = condition.value;
+            if( a !== b){
+                meetsCondition = false;
+            }
+        }
     });
     return meetsCondition;
 }
@@ -24,6 +30,20 @@ function executeAction(resource, actions) {
         if (action.type === 'notify') {
             notifier.notify(resource[action.attribute], action.message);
         }
+        else if(action.type === 'transfer') {
+            var transfer = {
+                medium: "balance",
+                payee_id: action.to,
+                amount: action.amount,
+                transaction_date: "2017-11-27",
+                status: "pending",
+                description: "automatic transfer"
+            };
+            accountService.createTransfer(action.from, transfer,function(response) {
+                console.info(response);
+            });
+            notifier.notify("amount transferred")
+        }
     });
 }
 
@@ -32,7 +52,8 @@ function evaluateCondition(policy) {
     return function (resources) {
         var conditions = policy.conditions;
         resources.forEach(function (resource) {
-            if (meetsConditions(resource, conditions)) {
+            var execute = meetsConditions(resource, conditions);
+            if (execute) {
                 executeAction(resource, policy.actions);
             }
         });
@@ -45,6 +66,9 @@ module.exports.evaluate = function (policy) {
     if (policy.resource === 'account') {
         accountService.getAccounts(evaluateCondition(policy));
         //future: filters
+    }
+    else if (policy.resource === 'singleAccount'){
+        accountService.getAccount(policy.resourceId, evaluateCondition(policy))
     }
     //evaluate condition
     //execute action
